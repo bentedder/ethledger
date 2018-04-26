@@ -5,7 +5,7 @@ import fetch from 'isomorphic-fetch';
 
 class App extends Component {
   doFetch = () => {
-    fetch('http://localhost:5000/api/address/1234')
+    fetch(`${process.env.REACT_APP_API_URL}/api/address/1234`)
       .then(res => {
         console.log(res);
       })
