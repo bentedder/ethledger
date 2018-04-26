@@ -12,7 +12,6 @@ app.use(cors());
 
 
 app.use('/api', bodyParser.json());
-
 app.post('/api/address', function(req, res) {
   var address = req.body.address;
   var name = req.body.name;
