@@ -1,9 +1,17 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import fetch from 'isomorphic-fetch';
 
 class App extends Component {
+  doFetch = () => {
+    fetch('http://localhost:5000/api/address/1234')
+      .then(res => {
+        console.log(res);
+      })
+  }
   render() {
+    this.doFetch();
     return (
       <div className="App">
         <header className="App-header">

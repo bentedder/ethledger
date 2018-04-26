@@ -4,7 +4,9 @@
   "description": "Note: I added an additional layer of \"why\" to the assignment by way of wrapping it in a use case for such an application.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "heroku-postbuild": "npm run ui",
+    "ui": "cd ui && yarn && yarn build && cp -rf build ../build"
   },
   "author": "",
   "license": "ISC",

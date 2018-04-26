@@ -4,7 +4,7 @@ var cors = require('cors');
 var bodyParser = require('body-parser');
 var app = express();
 
-app.use(express.static('dist/build'));
+app.use(express.static('build'));
 app.use('/static', express.static(__dirname + '/static'));
 
 app.set('view engine', 'pug');
