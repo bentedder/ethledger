@@ -33,8 +33,8 @@ An application to monitor ethereum addresses you care about. Watch over others i
 
 ### /api/address
 * POST (address: string, name: string), return 200
-* DELETE (address), return 200
 
 ### /api/address/:id
+* DELETE (address), return 200
 * GET, return all transactions and current balance
-* POST (breaks REST resource routing), goes and fetches new data, return transactions and current balance
+* &refresh=1 goes and fetches new data, return transactions and current balance
