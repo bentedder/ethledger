@@ -5,9 +5,13 @@ import fetch from 'isomorphic-fetch';
 class App extends Component {
   doFetch = () => {
     fetch(`${process.env.REACT_APP_API_URL}/api/address/1234`)
-      .then(res => {
-        console.log(res);
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
       })
+      .catch(err => {
+        console.error(err.message);
+      });
   }
   render() {
     this.doFetch();
