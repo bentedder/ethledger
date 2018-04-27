@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import fetch from 'isomorphic-fetch';
-import styled, { keyframes } from 'styled-components';
-import { base, weiToEth } from '../common';
 import * as moment from 'moment';
+import React, { Component } from 'react';
+import styled, { keyframes } from 'styled-components';
+
+import { base, weiToEth } from '../common';
 
 class FamLive extends Component {
   interval;
@@ -29,10 +29,12 @@ class FamLive extends Component {
     if (this.ws) {
       this.ws.close();
     }
+    this.setState({ liveResults: [] });
     this.ws = new WebSocket('wss://socket.etherscan.io/wshandler');
 
     this.ws.onmessage = (ev) => {
       const data = JSON.parse(ev.data);
+      console.log(data);
       if (data.event === 'txlist' && data.result.length) {
         const newResults = [
           ...data.result.map((result) => ({
@@ -46,8 +48,8 @@ class FamLive extends Component {
             ...result,
             friendlyTime: result.timestamp.fromNow(),
           }))
-        ];
-        newResults.length = 50;
+        ].sort((a, b) => b.timestamp - a.timestamp).filter(n => n);
+        newResults.length = 300;
         this.setState({ liveResults: newResults });
       }
     };

@@ -10,6 +10,26 @@ console.log(process.env.MONGODB_URI);
 mongoose.connect('mongodb://heroku_hs0fxhwl:go3pgv2ef2sg56865bbdprlpkh@ds053788.mlab.com:53788/heroku_hs0fxhwl');
 
 var Address = mongoose.model('Address', { name: String, address: String });
+var Transaction = mongoose.model('Transaction', { 
+  blockNumber: String,
+  blockHash: String,
+  timeStamp: String,
+  hash: { type: 'string', unique: true },
+  nonce: String,
+  transactionIndex: String,
+  from: String,
+  to: String,
+  value: String,
+  gas: String,
+  gasPrice: String,
+  input: String,
+  contractAddress: String,
+  cumulativeGasUsed: String,
+  txreceipt_status: String,
+  gasUsed: String,
+  confirmations: String,
+  isError: String
+});
 
 app.use(express.static('build'));
 app.use('/static', express.static(__dirname + '/static'));
@@ -79,11 +99,11 @@ var getSingleAddress = function(req, res) {
     return res.result / weiToEth;
   });
   
-  var transactionURL = 'http://api.etherscan.io/api?module=account&action=txlist&address=' + address + '&startblock=0&endblock=99999999&page=' + page + '&offset=' + limit + '&sort=desc&apikey=' + process.env.ETHERSCAN_API_KEY;
-  console.log(transactionURL);
+  var transactionURL = 'http://api.etherscan.io/api?module=account&action=txlist&address=' + address + '&startblock=0&endblock=99999999&sort=desc&apikey=' + process.env.ETHERSCAN_API_KEY;
   var transactions = fetch(transactionURL).then(function(res) { return res.json(); }).then(function(res) {
     return res.result;
   });
+
 
   Promise.all([account, transactions]).then(function(rs) {
     res.json({
@@ -93,7 +113,53 @@ var getSingleAddress = function(req, res) {
   });
 };
 
+var getBalance = function(req, res) {
+  var address = req.params.address;
+  var weiToEth = 1000000000000000000;
+  
+  var accountURL = 'https://api.etherscan.io/api?module=account&action=balance&address=' + address + '&tag=latest&apikey' + process.env.ETHERSCAN_API_KEY;
+  fetch(accountURL)
+    .then(function(res) {
+      return res.json();
+    })
+    .then(function(res) {
+      return res.result / weiToEth;
+    });
+};
+
+var getTransactions = function(req, res) {
+  var address = req.params.address;
+  Transaction.find().or([{ from: address.toLowerCase() }, { to: address.toLowerCase() }]).exec(function(err, t) {
+    if (err) {
+      res.status(500).send(err.msg);
+    } else {
+      res.json({ transactions: t })
+    }
+  })
+}
+
+var updateTransactions = function(req, res) {
+  var address = req.params.address;
+  var transactionURL = 'http://api.etherscan.io/api?module=account&action=txlist&address=' + address + '&startblock=0&endblock=99999999&sort=desc&apikey=' + process.env.ETHERSCAN_API_KEY;
+  fetch(transactionURL)
+    .then(function(resp) { return resp.json(); })
+    .then(function(resp) {
+      Transaction.insertMany(resp.result, { ordered: false },  function(err, transactions) {
+        if (err) {
+          console.log(err);
+          res.status(500).send(err.msg);
+        } else {
+          res.json({ transactions: transactions });
+        }
+      });
+    });
+
+}
+
 app.get('/api/address', getAllAddresses);
+app.get('/api/address/:address/balance', getBalance)
+app.get('/api/address/:address/transactions/update', updateTransactions)
+app.get('/api/address/:address/transactions', getTransactions)
 app.get('/api/address/:address', getSingleAddress);
 app.delete('/api/address/:address', deleteAddress);
 app.post('/api/address', createAddress);

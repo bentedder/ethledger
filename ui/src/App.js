@@ -65,6 +65,10 @@ class App extends Component {
     this.setState({ activeAddress: address });
   }
 
+  getBalance = (address) => {
+    this.getBalance(address);
+  }
+
   render() {
     return (
       <Wrap>
@@ -93,10 +97,6 @@ class App extends Component {
 }
 
 const Wrap = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  width: 100vw;
 
   h1 {
     display: block;

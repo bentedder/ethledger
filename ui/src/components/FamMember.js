@@ -5,21 +5,37 @@ import * as moment from 'moment';
 class FamMember extends Component {
 
   state = {
-    details: {},
+    transactions: [],
     fetching: false,
   }
 
-  getAddress = (address) => {
+  getTransactions = (address) => {
     this.setState({ fetching: true });
-    fetch(`${process.env.REACT_APP_API_URL}/api/address/${address}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/api/address/${address}/transactions`, {
       headers: new Headers({
         'Content-Type': 'application/json',
       }),
     })
     .then(res => res.json())
     .then(data => {
-      console.log(data);
-      this.setState({ details: data, fetching: false });
+      this.setState({ transactions: data.transactions, fetching: false });
+    })
+    .catch(err => {
+      console.error(err.message);
+      this.setState({ fetching: false });
+    });
+  }
+
+  updateTransactions = () => {
+    this.setState({ fetching: true });
+    fetch(`${process.env.REACT_APP_API_URL}/api/address/${this.props.address}/transactions/update`, {
+      headers: new Headers({
+        'Content-Type': 'application/json',
+      }),
+    })
+    .then(res => res.json())
+    .then(data => {
+      this.setState({ transactions: data.transactions, fetching: false });
     })
     .catch(err => {
       console.error(err.message);
@@ -30,7 +46,7 @@ class FamMember extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.address !== this.props.address) {
       if (!this.state.fetching) {
-        this.getAddress(nextProps.address);
+        this.getTransactions(nextProps.address);
       }
     }
   }
@@ -43,10 +59,13 @@ class FamMember extends Component {
         }
         {!this.state.fetching &&
           <div>
-            balance: {this.state.details.balance}<br/>
+            {/* balance: {this.state.details.balance}<br/> */}
             Transactions:<br/>
+            {this.state.transactions.length === 0 &&
+              <div>No transactions loaded. <button onClick={this.updateTransactions}>Update transactions</button></div>
+            }
             <ul>
-              {this.state.details.transactions && this.state.details.transactions.map((transaction, i) =>
+              {this.state.transactions && this.state.transactions.map((transaction, i) =>
                 <li key={i}>{moment(transaction.timestamp * 1000).format('YYYY-MM-DD')}<strong>{transaction.value}</strong> (from: {transaction.from}, to: {transaction.to})</li>
               )}
             </ul>
