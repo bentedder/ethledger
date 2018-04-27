@@ -131,7 +131,7 @@ var getTransactions = function(req, res) {
   var address = req.params.address;
   Transaction.find().or([{ from: address.toLowerCase() }, { to: address.toLowerCase() }]).exec(function(err, t) {
     if (err) {
-      res.status(500).send(err.msg);
+      res.status(500).send(err.message);
     } else {
       res.json({ transactions: t })
     }
@@ -140,14 +140,18 @@ var getTransactions = function(req, res) {
 
 var updateTransactions = function(req, res) {
   var address = req.params.address;
-  var transactionURL = 'http://api.etherscan.io/api?module=account&action=txlist&address=' + address + '&startblock=0&endblock=99999999&sort=desc&apikey=' + process.env.ETHERSCAN_API_KEY;
+  var transactionURL = 'http://api.etherscan.io/api?module=account&action=txlist&address=' + address + '&startblock=0&endblock=99999999&page=1&offset=1000&sort=desc&apikey=' + process.env.ETHERSCAN_API_KEY;
   fetch(transactionURL)
     .then(function(resp) { return resp.json(); })
     .then(function(resp) {
       Transaction.insertMany(resp.result, { ordered: false },  function(err, transactions) {
         if (err) {
-          console.log(err);
-          res.status(500).send(err.msg);
+          // console.log(err);
+          getTransactions(req, res);
+          // if (err.result.nInserted > 0) {
+          // } else {
+          //   res.status(500).send(err.message);
+          // }
         } else {
           res.json({ transactions: transactions });
         }

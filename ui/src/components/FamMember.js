@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import fetch from 'isomorphic-fetch';
 import * as moment from 'moment';
+import { weiToEth } from '../common';
 
 class FamMember extends Component {
 
@@ -18,7 +19,10 @@ class FamMember extends Component {
     })
     .then(res => res.json())
     .then(data => {
-      this.setState({ transactions: data.transactions, fetching: false });
+      this.setState({ transactions: data.transactions.map((transaction) => ({
+        ...transaction,
+        value: (parseInt(transaction.value, 10) / weiToEth).toPrecision(4),
+      })), fetching: false });
     })
     .catch(err => {
       console.error(err.message);
@@ -35,7 +39,10 @@ class FamMember extends Component {
     })
     .then(res => res.json())
     .then(data => {
-      this.setState({ transactions: data.transactions, fetching: false });
+      this.setState({ transactions: data.transactions.map((transaction) => ({
+        ...transaction,
+        value: (parseInt(transaction.value, 10) / weiToEth).toPrecision(4),
+      })), fetching: false });
     })
     .catch(err => {
       console.error(err.message);
@@ -60,13 +67,13 @@ class FamMember extends Component {
         {!this.state.fetching &&
           <div>
             {/* balance: {this.state.details.balance}<br/> */}
-            Transactions:<br/>
-            {this.state.transactions.length === 0 &&
-              <div>No transactions loaded. <button onClick={this.updateTransactions}>Update transactions</button></div>
-            }
+            Transactions: <button onClick={this.updateTransactions}>Update transactions</button>
             <ul>
               {this.state.transactions && this.state.transactions.map((transaction, i) =>
-                <li key={i}>{moment(transaction.timestamp * 1000).format('YYYY-MM-DD')}<strong>{transaction.value}</strong> (from: {transaction.from}, to: {transaction.to})</li>
+                <li key={i}>
+                  {transaction.to === this.props.address ? 'Received' : 'Sent'} {transaction.value} Ether 
+                  {moment(transaction.timeStamp * 1000).format('YYYY-MM-DD hh:mma Z')}
+                </li>
               )}
             </ul>
           </div>
