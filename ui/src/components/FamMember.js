@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import fetch from 'isomorphic-fetch';
+import * as moment from 'moment';
 
-class Details extends Component {
+class FamMember extends Component {
 
   state = {
     details: {},
@@ -46,7 +47,7 @@ class Details extends Component {
             Transactions:<br/>
             <ul>
               {this.state.details.transactions && this.state.details.transactions.map((transaction, i) =>
-                <li key={i}><strong>{transaction.value}</strong> (from: {transaction.from}, to: {transaction.to})</li>
+                <li key={i}>{moment(transaction.timestamp * 1000).format('YYYY-MM-DD')}<strong>{transaction.value}</strong> (from: {transaction.from}, to: {transaction.to})</li>
               )}
             </ul>
           </div>
@@ -56,4 +57,4 @@ class Details extends Component {
   }
 }
 
-export default Details;
+export default FamMember;

@@ -68,6 +68,8 @@ var getAllAddresses = function(req, res) {
 var getSingleAddress = function(req, res) {
   var address = req.params.address;
   var refresh = req.query.refresh === '1';
+  var limit = req.query.limit || 25;
+  var page = req.query.page || 1;
   // method here for fetching all data from DB for this address
   // if refresh is true, fetch from source, update DB, and return data
   var weiToEth = 1000000000000000000;
@@ -77,16 +79,10 @@ var getSingleAddress = function(req, res) {
     return res.result / weiToEth;
   });
   
-  var transactionURL = 'http://api.etherscan.io/api?module=account&action=txlist&address=' + address + '&startblock=0&endblock=99999999&page=1&offset=10&sort=asc&apikey=' + process.env.ETHERSCAN_API_KEY;
+  var transactionURL = 'http://api.etherscan.io/api?module=account&action=txlist&address=' + address + '&startblock=0&endblock=99999999&page=' + page + '&offset=' + limit + '&sort=desc&apikey=' + process.env.ETHERSCAN_API_KEY;
+  console.log(transactionURL);
   var transactions = fetch(transactionURL).then(function(res) { return res.json(); }).then(function(res) {
-    return res.result.map(function(transaction) {
-      return {
-        from: transaction.from,
-        to: transaction.to,
-        value: parseInt(transaction.value, 10) / weiToEth,
-        timestamp: transaction.timestamp,
-      }
-    });
+    return res.result;
   });
 
   Promise.all([account, transactions]).then(function(rs) {
