@@ -1,7 +1,9 @@
 Note: I added an additional layer of "why" to the assignment by way of wrapping it in a use case for such an application.
 
-# EtherFam
-An application to monitor ethereum addresses you care about. Watch over others in your EtherFam.
+# Eth Ledger
+An application to monitor ethereum addresses you care about.
+
+![alt text](https://images-production.global.ssl.fastly.net/uploads/images/file/12793/heath-ledger.jpg?auto=compress&fit=crop&h=300&q=55&w=300)
 
 ## Core functionality
 1. Create your fam by adding Ethereum addresses to monitor
@@ -13,7 +15,6 @@ An application to monitor ethereum addresses you care about. Watch over others i
 * "update" button to manually update information stored in DB for each address
 * "last updated" timestamp to show user the last time data was updated
 * make sure backend never exceeds the rate limit of etherscan.io
-
 
 ### /
 * add new address with nickname
