@@ -109,9 +109,19 @@ export const getAccounts = () => (dispatch) => {
 //   });
 // }
 
-export const getTransactions = (address) => (dispatch) => {
+export const getTransactions = (address, refresh, filters) => (dispatch) => {
   dispatch(requestGetTransactions());
-  fetch(`${process.env.REACT_APP_API_URL}/api/transactions/${address}`, { headers })
+  let url = `${process.env.REACT_APP_API_URL}/api/transactions/${address}?`;
+  if (refresh) {
+    url += 'refresh=1&';
+  }
+  if (filters && filters.sort) {
+    url += `sort=${filters.sort}&`;
+  }
+  if (filters && filters.direction) {
+    url += `direction=${filters.direction}&`;
+  }
+  fetch(url, { headers })
   .then(res => res.json())
   .then(data => dispatch(requestGetTransactionsSuccess(data.transactions)))
   .catch(err => {
