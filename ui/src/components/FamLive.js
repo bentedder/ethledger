@@ -71,7 +71,7 @@ class FamLive extends Component {
         <h2>EtherFam Live</h2>
         <div className="list">
           {this.state.liveResults.length === 0 &&
-            <div className="loading">Loading...</div>
+            <div className="loading">Listening...</div>
           }
           {this.state.liveResults.map((result, i) =>
             <div key={i} className="item">{result.value} ({result.friendlyTime})</div>
