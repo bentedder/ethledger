@@ -25,7 +25,7 @@ var Transaction = mongoose.model('Transaction', {
   isError: String
 });
 
-var getDBTransactions = function(req, res) {
+var getFromDB = function(req, res) {
   var address = req.params.address;
   Transaction.find().or([{ from: address.toLowerCase() }, { to: address.toLowerCase() }]).exec(function(err, t) {
     if (err) {
@@ -33,7 +33,7 @@ var getDBTransactions = function(req, res) {
     } else {
       res.json({ transactions: t })
     }
-  })
+  });
 }
 
 var updateTransactions = function(req, res) {
@@ -43,7 +43,7 @@ var updateTransactions = function(req, res) {
     .then(function(resp) { return resp.json(); })
     .then(function(resp) {
       Transaction.insertMany(resp.result, { ordered: false },  function(err, transactions) {
-        getDBTransactions(req, res);
+        getFromDB(req, res);
       });
     });
 }
@@ -53,7 +53,7 @@ var getTransactions = function(req, res) {
   if (refresh) {
     updateTransactions(req, res);
   } else {
-    getDBTransactions(req, res);
+    getFromDB(req, res);
   }
 }
 

@@ -16,12 +16,13 @@ app.use('/static', express.static(__dirname + '/static'));
 
 app.set('view engine', 'pug');
 app.use(cors());
-app.use('/api', bodyParser.json());
 
+// API routes
+app.use('/api', bodyParser.json());
 app.use('/api/transactions', transactionController);
 app.use('/api/address', accountController);
 
-// fallback route
+// UI Route (give all control to front-end for routing at this point)
 app.get('/*', function(req, res) {
   res.sendFile(path.resolve(__dirname, 'build/index.html'));
 });
