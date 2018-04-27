@@ -1,22 +1,25 @@
 import React, { Component } from 'react';
 import './App.css';
-import fetch from 'isomorphic-fetch';
+import NewAddress from './components/NewAddress';
+import AddressList from './components/AddressList';
+import Details from './components/Details';
 
 class App extends Component {
-  doFetch = () => {
-    fetch(`${process.env.REACT_APP_API_URL}/api/address/1234`)
-      .then(res => res.json())
-      .then(data => {
-        console.log(data);
-      })
-      .catch(err => {
-        console.error(err.message);
-      });
+  state = {
+    activeAddress: ''
   }
+
+  setActiveAddress = (address) => {
+    this.setState({ activeAddress: address });
+  }
+
   render() {
-    this.doFetch();
     return (
       <div className="App">
+        EtherFam
+        <NewAddress />
+        <AddressList onActivate={this.setActiveAddress} />
+        <Details address={this.state.activeAddress} /> 
       </div>
     );
   }
