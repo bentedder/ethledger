@@ -9,9 +9,9 @@ Check out the live version here: https://ethledger.herokuapp.com/ (free tier ser
 This is a node server, connecting to a MongoDB, hosting a React app. The whole thing is self-contained, provided you set the correct keys in the .env file(s).
 
 ## Installation
-* Run `yarn` or `npm install` from the root directory.
-* Then run `npm run build`. This will build the front-end and drop it up a directory so that the server can access it. Then run 
-* Finally, run `foreman start`
+* Run `yarn` or `npm install` from the root directory
+* Then run `npm run build`. This will build the front-end and drop it up a directory so that the server can access it.
+* Finally, run `foreman start`.
 
 ### Considerations
 For the sake of this demo I've checked in my .env files. Obviously this isn't something I recommend in prod.
