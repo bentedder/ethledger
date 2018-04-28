@@ -54,7 +54,7 @@ class NewAccount extends Component {
               onChange={this.changeName}
             />
           </div>
-          <button type="submit">Add</button>
+          <button type="submit" className="add-btn">Add</button>
         </form>
       </Wrap>
     );
@@ -62,18 +62,29 @@ class NewAccount extends Component {
 }
 
 const Wrap = styled.div`
-  padding: ${base};
+  padding: ${base * 3}px;
+  max-width: 600px;
+  margin: 0 auto;
 
   form {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
+
+    @media(max-width: 700px) {
+      flex-direction: column;
+      align-items: stretch;
+    }
 
     .field {
       flex: 1;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      padding: ${base}px;
+      padding: 0 ${base}px;
+      
+      @media(max-width: 700px) {
+        padding: ${base}px 0;
+      }
     }
 
     label {
@@ -88,6 +99,28 @@ const Wrap = styled.div`
       border: 1px solid #aaa;
       outline: none;
       width: 100%;
+    }
+
+    .add-btn {
+      display: block;
+      border-radius: 3px;
+      background: #005baa;
+      color: #fff;
+      padding: ${base}px;
+      text-align: center;
+      outline: none;
+      border: 1px solid #005baa;
+      font-weight: bold;
+      text-transform: uppercase;
+
+      @media(max-width: 700px) {
+        margin-top: ${base * 2}px;
+      }
+
+      &:hover {
+        cursor: pointer;
+        background: #003f76;
+      }
     }
   }
 `;

@@ -1,5 +1,12 @@
-import { createReducer } from "./helper";
-import { REQUEST_ACCOUNTS_SUCCESS, REQUEST_ACCOUNT_SUCCESS, REQUEST_TRANSACTIONS, REQUEST_TRANSACTIONS_SUCCESS } from "./actions";
+import {
+  DEACTIVATE_ACCOUNT,
+  REQUEST_ACCOUNT,
+  REQUEST_ACCOUNT_SUCCESS,
+  REQUEST_ACCOUNTS_SUCCESS,
+  REQUEST_TRANSACTIONS,
+  REQUEST_TRANSACTIONS_SUCCESS,
+} from './actions';
+import { createReducer } from './helper';
 
 const initial = {
   accounts: [],
@@ -11,14 +18,27 @@ const initial = {
   loadingTransactions: false,
 }
 
+const requestAccounts = (state, action) => ({
+  ...state,
+  loadingAccounts: true,
+  accounts: [],
+});
+
 const receiveAccounts = (state, action) => ({
   ...state,
-  accounts: action.payload
+  accounts: action.payload,
+  loadingAccounts: false,
+});
+
+const requestAccount = (state, action) => ({
+  ...state,
+  loadingAccount: true,
 });
 
 const receiveAccount = (state, action) => ({
   ...state,
-  activeAccount: action.payload
+  activeAccount: action.payload,
+  loadingAccount: false,
 });
 
 const requestTransactions = (state, action) => ({
@@ -29,13 +49,22 @@ const requestTransactions = (state, action) => ({
 
 const receiveTransactions = (state, action) => ({
   ...state,
+  transactions: action.payload,
   loadingTransactions: false,
-  transactions: action.payload
+});
+
+const deactivateAccount = (state, action) => ({
+  ...state,
+  loadingTransactions: false,
+  transactions: [],
+  activeAccount: null,
 });
 
 export const accountReducer = createReducer(initial, {
   [REQUEST_ACCOUNTS_SUCCESS]: receiveAccounts,
+  [REQUEST_ACCOUNT]: requestAccount,
   [REQUEST_ACCOUNT_SUCCESS]: receiveAccount,
   [REQUEST_TRANSACTIONS]: requestTransactions,
   [REQUEST_TRANSACTIONS_SUCCESS]: receiveTransactions,
+  [DEACTIVATE_ACCOUNT]: deactivateAccount
 });

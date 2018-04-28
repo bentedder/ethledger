@@ -18,6 +18,8 @@ export const REQUEST_TRANSACTIONS = 'Request Transactions';
 export const REQUEST_TRANSACTIONS_SUCCESS = 'Request Transactions Success';
 export const REQUEST_TRANSACTIONS_FAIL = 'Request Transactions Failure';
 
+export const DEACTIVATE_ACCOUNT = 'Remove the active account';
+
 const requestAccounts = () => ({
   type: REQUEST_ACCOUNTS
 });
@@ -73,6 +75,10 @@ const requestGetTransactionsSuccess = (transactions) => ({
 
 const requestGetTransactionsFail = () => ({
   type: REQUEST_TRANSACTIONS_FAIL,
+});
+
+export const deactivateAccount = () => ({
+  type: DEACTIVATE_ACCOUNT,
 });
 
 export const getAccount = (address) => (dispatch) => {

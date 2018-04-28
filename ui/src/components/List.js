@@ -25,7 +25,7 @@ class List extends Component {
               <div className="meta">{account.address}</div>
             </Link>
             <div className="balance">
-              {account.balance}
+              {parseFloat(account.balance).toFixed(4)}
             </div>
           </div>
         )}
@@ -36,25 +36,54 @@ class List extends Component {
 
 const Wrap = styled.div`
   background: #fff;
+  padding: ${base * 2}px;
+  max-width: 600px;
+  margin: 0 auto;
 
   .item {
     display: flex;
-    align-items: center;
+    align-items: stretch;
+    word-break: break-all;
+    margin: ${base * 3}px 0;
   }
 
   .info {
     padding: ${base * 2}px;
     cursor: pointer;
     flex: 1;
+    text-decoration: none;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 3px;
 
     &:hover {
-      background: #efefef;
+      cursor: pointer;
+      box-shadow: 1px 1px 7px -1px #aaa;
+      z-index: 20;
     }
   }
 
   .meta {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     color: #888;
+  }
+
+  .balance {
+    flex: 0 0 100px;
+    padding: 20px;
+    word-break: normal;
+    text-align: right;
+    font-size: 0.9em;
+    font-weight: bold;
+    background: #efefef;
+    border: 1px solid #ccc;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-left: 0;
+    align-self: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 `;
 const mapStateToProps = (state) => ({

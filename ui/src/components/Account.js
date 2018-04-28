@@ -1,83 +1,102 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import fetch from 'isomorphic-fetch';
-import { withRouter } from 'react-router-dom';
-import * as moment from 'moment';
-import { weiToEth } from '../common';
+import { Link, withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
-import { getAccount, getTransactions } from '../state/actions';
+import styled from 'styled-components';
+
+import { base } from '../common';
+import { deactivateAccount, getAccount } from '../state/actions';
+import Transactions from './Transactions';
 
 class Account extends Component {
 
-  state = {
-    filters: {
-      direction: 'both',
-      sort: 'asc',
-    }
-  }
-
   componentDidMount() {
     this.props.getAccount(this.props.match.params.address)
-    this.getTransactions();
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.match.params.id !== this.props.match.params.id) {
       this.props.getAccount(this.props.match.params.address);
-      this.getTransactions();
     }
   }
 
-  getTransactions = (refresh = false) => {
-    this.props.getTransactions(this.props.match.params.address, refresh, this.state.filters);
-  }
-
-  handleChange = (e) => {
-    this.setState({ filters: {
-      ...this.state.filters,
-      direction: e.target.value,
-    }}, () => {
-      this.getTransactions();
-    });
+  componentWillUnmount() {
+    this.props.deactivateAccount();
   }
 
   render() {
     return (
-      <div>
-        {this.props.account &&
+      <Wrap>
+        <Link className="back" to={'/'}>&larr; back to accounts</Link>
+        {this.props.loading &&
+          <div>Loading account info</div>
+        }
+        {!this.props.loading && this.props.account &&
           <div>
-            <h2>{this.props.account.name}</h2>
-            <p>{this.props.account.address}</p>
-            {this.props.account.balance} ETH<br/>
-            Transactions: <button onClick={this.getTransactions.bind(null, true)}>Update transactions</button>
-            <label>Both <input type="radio" value="both" onChange={this.handleChange} checked={this.state.filters.direction === 'both'} /></label>
-            <label>Received <input type="radio" value="inbound" onChange={this.handleChange} checked={this.state.filters.direction === 'inbound'} /></label>
-            <label>Sent <input type="radio" value="outbound" onChange={this.handleChange} checked={this.state.filters.direction === 'outbound'} /></label>
-            <ul>
-              {this.props.transactions.map((transaction, i) =>
-                <li key={i}>
-                  {transaction.to.toLowerCase() === this.props.match.params.address.toLowerCase() ? 'Received' : 'Sent'} {(transaction.value / weiToEth).toPrecision(4)} Ether 
-                  {moment(transaction.timeStamp * 1000).format('YYYY-MM-DD hh:mma Z')}
-                </li>
-              )}
-            </ul>
+            <div className="account-header">
+              <div className="name">
+                <h2>{this.props.account.name}</h2>
+                <p className="meta">{this.props.account.address}</p>
+              </div>
+              <div className="balance">
+                {parseFloat(this.props.account.balance).toFixed(4)} ETH
+              </div>
+            </div>
+            <Transactions address={this.props.account.address} />
           </div>
         }
-      </div>
+      </Wrap>
     );
   }
 }
 
+const Wrap = styled.div`
+  background: #fff;
+  padding: ${base * 2}px;
+  max-width: 600px;
+  margin: 0 auto;
+
+  .back {
+    font-size: 0.8em;
+    color: #999;
+    margin-bottom: ${base * 3}px;
+    display: block;
+  }
+
+  .account-header {
+    display: flex;
+    align-items: center;
+    word-break: break-all;
+
+    h2 {
+      margin-top: 0;
+    }
+  }
+
+  .meta {
+    font-size: 0.9em;
+  }
+
+  .name {
+    flex: 1;
+  }
+
+  .balance {
+    flex: 0 0 150px;
+    font-weight: bold;
+    text-align: center;
+  }
+`;
+
 const mapStateToProps = (state) => ({
   account: state.accounts.activeAccount,
-  loading: state.accounts.loadingTransactions,
-  transactions: state.accounts.transactions,
+  loading: state.accounts.loadingAccount,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     getAccount,
-    getTransactions,
+    deactivateAccount,
   }, dispatch)
 });
 
