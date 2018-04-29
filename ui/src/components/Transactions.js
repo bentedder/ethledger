@@ -56,10 +56,10 @@ class Transactions extends Component {
         </div>
         <div className="list">
           {this.props.loading &&
-            <div>Loading transactions</div>
+            <div>Loading transactions. Note: if this is a very active account, the request may time out.</div>
           }
           {!this.props.loading && this.props.transactions.length === 0 &&
-            <div>No transactions match your query</div>
+            <div>No transactions match your query.</div>
           }
           <ul class="transaction-list">
             {this.props.transactions.map((transaction, i) =>

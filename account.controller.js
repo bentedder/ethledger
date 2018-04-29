@@ -86,7 +86,9 @@ var getAccounts = function(req, res) {
           });
         });
       } else {
-        res.status(500).send('You have requested an address you have not saved yet...');
+        res.json({
+          accounts: []
+        });
       }
     }
   })

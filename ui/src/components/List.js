@@ -18,6 +18,9 @@ class List extends Component {
         {this.props.loadingAccounts &&
           <div>Loading accounts</div>
         }
+        {!this.props.loadingAccounts && this.props.accounts.length === 0 &&
+          <div>You have not added any Ethereum addresses yet. Add an Ethereum address using the form above, and give it a memorable nickname so you can recognize it later.</div>
+        }
         {!this.props.loadingAccounts && this.props.accounts.map((account, i) => 
           <div key={i} className="item">
             <Link className="info" to={`/${account.address}`}>
