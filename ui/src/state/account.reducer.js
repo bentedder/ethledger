@@ -14,7 +14,7 @@ const initial = {
   transactionFilters: {},
   activeAccount: null,
   loadingAccount: false,
-  loadingAccounts: false,
+  loadingAccounts: true,
   loadingTransactions: false,
 }
 

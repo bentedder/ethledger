@@ -28,7 +28,7 @@ var Transaction = mongoose.model('Transaction', {
 var getFromDB = function(req, res) {
   var address = req.params.address;
   var direction = req.query.direction || 'both';
-  const query = Transaction.find();
+  var query = Transaction.find();
   if (direction === 'both') {
     query.or([{ from: address.toLowerCase() }, { to: address.toLowerCase() }]);
   } else if (direction === 'inbound') {
